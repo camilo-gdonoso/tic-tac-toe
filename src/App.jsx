@@ -57,6 +57,10 @@ function App() {
     setWinner(null)
   }
 
+  const checkEndGame = (newBoard) => {
+    return newBoard.every((square) => square !== null)
+  }
+
   const updateBoard = (index) => {
     // si ya tiene algo
     if(board[index] || winner) return
@@ -70,9 +74,9 @@ function App() {
     const newWinner = checkWinner(newBoard)
     if(newWinner){
       setWinner(newWinner)
-      // check if game is over
-      resetGame()
-
+      // check if game is over  
+    } else if(checkEndGame(newBoard)) {
+      setWinner(false)
     }
   }
 
