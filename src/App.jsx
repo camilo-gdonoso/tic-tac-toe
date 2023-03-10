@@ -51,6 +51,12 @@ function App() {
     return null
   }
 
+  const resetGame = () => {
+    setBoard(Array(9).fill(null))
+    setTurn(TURNS.X)
+    setWinner(null)
+  }
+
   const updateBoard = (index) => {
     // si ya tiene algo
     if(board[index] || winner) return
@@ -64,7 +70,9 @@ function App() {
     const newWinner = checkWinner(newBoard)
     if(newWinner){
       setWinner(newWinner)
-      alert(`El ganador es ${newWinner}`)
+      // check if game is over
+      resetGame()
+
     }
   }
 
@@ -72,6 +80,7 @@ function App() {
   return (
     <main className='board'>
       <h1>El juego del gato</h1>
+      <button onClick={resetGame}>Empezar de nuevo</button>
       <section className="game">
         {
           board.map((_, index) => {
@@ -81,7 +90,7 @@ function App() {
                 index={index}
                 updateBoard={updateBoard}
                 >
-               {board[index]}
+              {board[index]}
               </Square>
             )
           })
@@ -95,6 +104,27 @@ function App() {
           {TURNS.O}
         </Square>
       </section>
+      {
+        winner !== null && (
+          <section className="winner">
+            <div className="text">
+              <h2>
+                {
+                  winner === false 
+                  ? 'Empate'
+                  : 'Gano:'
+                }
+              </h2>
+              <header className="win">
+                {winner && <Square>{winner}</Square>}
+              </header>
+              <footer>
+                <button onClick={resetGame}>Empezar de nuevo</button>
+              </footer>
+            </div>
+          </section>
+        )
+      }
     </main>
   )
 }
