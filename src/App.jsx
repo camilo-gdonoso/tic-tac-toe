@@ -11,17 +11,26 @@ import { WinnerModal } from './components/WinnerModal'
 
 function App() {
 
-  const [board, setBoard] = useState(Array(9).fill(null))
- 
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem('board')
+    return boardFromStorage ? JSON.parse(boardFromStorage) :  Array(9).fill(null)
+  })
 
-  const [turn, setTurn] = useState(TURNS.X)
-  const [winner, setWinner] = useState(null) // nul no hay ganador, false empate
+
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem('turn')
+    return turnFromStorage ?? TURNS.X
+  })
+
+  const [winner, setwinner] = useState(null)
 
 
   const resetGame = () => {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
     setWinner(null)
+    window.localStorage.removeItem('board')
+    window.localStorage.removeItem('turn')
   }
 
  
@@ -35,6 +44,9 @@ function App() {
 
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
+    // guardar partida
+    window.localStorage.setItem('board', JSON.stringify(newBoard));
+    window.localStorage.setItem('turn', JSON.stringify(turn));
     // revisar si tenemos ganador
     const newWinner = checkWinner(newBoard)
     if(newWinner){
@@ -51,7 +63,7 @@ function App() {
     <main className='board'>
       <h1>El juego del gato</h1>
       <button onClick={resetGame}>Empezar de nuevo</button>
-      <section className="game">
+      <section className='game'>
         {
           board.map((square, index) => {
             return (
@@ -66,7 +78,7 @@ function App() {
           })
         }
       </section>
-      <section>
+      <section className='turn'>
         <Square isSelected={turn === TURNS.X}>
           {TURNS.X}
         </Square>
